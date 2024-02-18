@@ -1,7 +1,6 @@
 import '../models/key_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../func_perm_widgets/function_and_var_global.dart';
 import '../main.dart';
 
@@ -15,10 +14,12 @@ void main() {
         ),
         scaffoldBackgroundColor: const Color(0xca5c8486),
       ),
-      home: Keyadd()));
+      home: const Keyadd()));
 }
 
 class Keyadd extends StatefulWidget {
+  const Keyadd({super.key});
+
   @override
   State<Keyadd> createState() => _KeyaddState();
 }
@@ -82,6 +83,7 @@ class _KeyaddState extends State<Keyadd> {
                         mykey.add(KeySaved(keyController.text));
                         await listToCSV(mykey).then((value) {
                           keyStoredS(context);
+                          keyController.clear();
                           setState(() {});
                         });
                       }

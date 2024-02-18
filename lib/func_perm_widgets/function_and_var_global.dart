@@ -7,7 +7,6 @@ import '../models/key_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -21,7 +20,7 @@ String mKey = '';
 TextEditingController hintController = TextEditingController();
 TextEditingController cantController = TextEditingController();
 TextEditingController keyController = TextEditingController();
-late List<Gif> listadoGifs = [];
+List<Gif> listadoGifs = [];
 late String localPath;
 late bool permissionReady;
 late TargetPlatform? platform;
@@ -34,9 +33,10 @@ Future<List<Gif>> getGifs(context) async {
   if (mKey == '') {
     aletKey(context);
   } else {
-    var _url = Uri.parse(
+    var url = Uri.parse(
         "https://api.giphy.com/v1/gifs/search?api_key=$mKey&q=$hints&limit=$cants&offset=0&rating=g&lang=es");
-    final response = await http.get(_url);
+    final response = await http.get(url);
+    final temValidate = jsonDecode(response.body);
     if (response.statusCode == 200) {
       var datos = jsonDecode(response.body);
       var count = 0;
@@ -47,7 +47,16 @@ Future<List<Gif>> getGifs(context) async {
         count++;
       }
     } else {
-      print(response.body);
+      print('Boddy:   ${temValidate['meta']['msg']}');
+      if (temValidate['meta']['msg'] == 'Unauthorized') {
+        aletKey(context);
+        mKey = '';
+        keyController.text = '';
+        Navigator.pop(context);
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const MaingPage()));
+
+      }
       throw Exception("Fallo la conexión");
     }
     return gifs;
@@ -65,8 +74,11 @@ Future<bool> checkPermission(BuildContext context) async {
     statusess =
         await [Permission.manageExternalStorage, Permission.photos].request();
   } else {
-    statusess =
-        await [Permission.manageExternalStorage, Permission.storage, Permission.mediaLibrary].request();
+    statusess = await [
+      Permission.manageExternalStorage,
+      Permission.storage,
+      Permission.mediaLibrary
+    ].request();
   }
 
   var stat = false;
@@ -87,7 +99,7 @@ Future<void> checkWritePermission() async {
     if (Platform.isAndroid || Platform.isIOS) {
       var permissionStatus = await Permission.storage.status;
 
-      print('permission status: $permissionStatus');
+      //print('permission status: $permissionStatus');
 
       switch (permissionStatus) {
         case PermissionStatus.denied:
@@ -111,7 +123,7 @@ Future<void> checkWritePermission() async {
 Future<void> prepareSaveDir() async {
   localPath = (await findLocalPath())!;
   final savedDir = Directory(localPath);
-  print("Thissssss" + savedDir.toString());
+  // print("Thissssss$savedDir");
   bool hasExisted = await savedDir.exists();
   if (!hasExisted) {
     savedDir.create();
@@ -123,7 +135,7 @@ Future<String?> findLocalPath() async {
     return "/sdcard/download/";
   } else {
     var directory = await getApplicationDocumentsDirectory();
-    return directory.path + Platform.pathSeparator + 'Download';
+    return '${directory.path}${Platform.pathSeparator}Download';
   }
 }
 
@@ -154,15 +166,20 @@ Future<void> aletKey(BuildContext context) async {
     barrierDismissible: false,
     context: context,
     builder: (BuildContext context) => AlertDialog(
-      title: const Text('Giphy Key needed'),
+      title: const Text('Giphy Key error'),
       content: const Text(
           textAlign: TextAlign.center,
-          'Para poder usar la App necesitas un Api Key en Giphy de forma gratuita y personal'),
+          'Para poder usar la App necesitas un Api Key Valida,  en Giphy de forma gratuita y personal'),
       actions: <Widget>[
         TextButton(
-          onPressed: () {
-            openAppSettings();
-            Navigator.pop(context, 'Si');
+          onPressed: () async {
+            mykey = [KeySaved('')];
+            await listToCSV(mykey)
+                .then((value) {
+              Navigator.pop(context, 'Si');
+              hintController.clear();
+              cantController.clear();
+                });
           },
           child: const Text('OK'),
         ),
@@ -177,9 +194,7 @@ Future<void> alertDialog2(BuildContext context) async {
     context: context,
     builder: (BuildContext context) => AlertDialog(
       title: const Text('ERROR on Download'),
-      content: const Text(
-          textAlign: TextAlign.center,
-          'File not Downloaded'),
+      content: const Text(textAlign: TextAlign.center, 'File not Downloaded'),
       actions: <Widget>[
         TextButton(
           onPressed: () {
@@ -227,10 +242,8 @@ Future<void> keyStoredS(BuildContext context) async {
         TextButton(
           onPressed: () {
             Navigator.pop(context, 'Si');
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => MaingPage()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const MaingPage()));
           },
           child: const Text('OK'),
         ),
@@ -247,7 +260,7 @@ Future<void> listToCSV(List<KeySaved> lista) async {
         ])
   ];
   csv = const ListToCsvConverter().convert(csvData);
-  print('valor del CSV leid: $csv');
+  //print('valor del CSV leid: $csv');
 
   final String dir = (await getApplicationDocumentsDirectory()).path;
   final String path = '$dir/$csvName';
@@ -264,9 +277,9 @@ Future<void> csvRead() async {
   final input = File(path).openRead();
   final fields = await input
       .transform(utf8.decoder)
-      .transform(CsvToListConverter())
+      .transform(const CsvToListConverter())
       .toList();
-  print('Tamaño:  ${fields.length}');
+  //print('Tamaño:  ${fields.length}');
   final String keyS = fields[1][0].toString();
   mykey.add(KeySaved(keyS));
   timporEspera(250);
@@ -316,7 +329,7 @@ Widget bottomDevName() {
   );
 }
 
-Future<void> urlCall (String surl) async{
+Future<void> urlCall(String surl) async {
   final Uri url = Uri.parse(surl);
   if (!await launchUrl(url)) {
     throw Exception('Could not launch $url');

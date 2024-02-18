@@ -1,14 +1,13 @@
 import '../models/key_model.dart';
 import '../screens/save_key.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'screens/home.dart';
 import 'func_perm_widgets/function_and_var_global.dart';
 
-late List<KeySaved> mykey = [];
+List<KeySaved> mykey = [];
 var cur_home = false;
 
-void main() => runApp(Main());
+void main() => runApp(const Main());
 
 class Main extends StatefulWidget {
   const Main({Key? key}) : super(key: key);
@@ -22,7 +21,6 @@ class _MainState extends State<Main> {
   @override
   void initState() {
     csvRead().then((value) => {
-      print (mykey),
         mKey = mykey[0].keyS.toString(),
         setState(() {})
     });
@@ -42,13 +40,13 @@ class _MainState extends State<Main> {
       ),
 
 
-      home: MaingPage(),
+      home: const MaingPage(),
     );
   }
 }
 
 class MaingPage extends StatefulWidget {
-  MaingPage({Key? key}) : super(key: key);
+  const MaingPage({Key? key}) : super(key: key);
 
   @override
   _MaingPageState createState() => _MaingPageState();
@@ -59,7 +57,7 @@ class _MaingPageState extends State<MaingPage> {
   Widget build(BuildContext context) {
     checkPermission(context);
     if (mKey == ''){
-      return Keyadd();
+      return const Keyadd();
     }else{
       return const Home();
     }

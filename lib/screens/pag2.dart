@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:delayed_display/delayed_display.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
@@ -21,13 +20,13 @@ class Pag2 extends StatelessWidget {
         ),
         scaffoldBackgroundColor: const Color(0xca5c8486),
       ),
-      home: PageGif(),
+      home: const PageGif(),
     );
   }
 }
 
 class PageGif extends StatefulWidget {
-  PageGif({Key? key}) : super(key: key);
+  const PageGif({Key? key}) : super(key: key);
 
   @override
   _PageGifState createState() => _PageGifState();
@@ -59,7 +58,7 @@ class _PageGifState extends State<PageGif> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => MaingPage()));
+                      builder: (context) => const MaingPage()));
             },
           ),
           const SizedBox(width: 10),
@@ -81,10 +80,10 @@ class _PageGifState extends State<PageGif> {
     return ListView.builder(
       itemCount: listadoGifs.length,
       itemBuilder: (BuildContext context, int index) {
-        var _len = 0;
-        _len = listadoGifs[index].name.toString().length;
-        if (_len >= 40) {
-          _len = 40;
+        var len = 0;
+        len = listadoGifs[index].name.toString().length;
+        if (len >= 40) {
+          len = 40;
         }
         return DelayedDisplay(
           delay: const Duration(milliseconds: 450),
@@ -102,7 +101,7 @@ class _PageGifState extends State<PageGif> {
                           listadoGifs[index]
                               .name
                               .toString()
-                              .substring(0, _len)
+                              .substring(0, len)
                               .toUpperCase(),
                           style: const TextStyle(
                               fontSize: 12,
@@ -115,7 +114,7 @@ class _PageGifState extends State<PageGif> {
                         ),
                         GestureDetector(
                             onTap: () async {
-                              http.Response _gif = await http.get(Uri.parse(
+                              http.Response gif = await http.get(Uri.parse(
                                   listadoGifs[index].url.toString()));
                               permissionReady =
                               await checkPermission(context);
@@ -123,9 +122,9 @@ class _PageGifState extends State<PageGif> {
                                 var dir =  '/storage/emulated/0/Download/';
                                 print("Downloading $dir");
                                 var gifTo = '${dir.toString()}gifto.gif';
-                                if (_gif.body.isNotEmpty) {
+                                if (gif.body.isNotEmpty) {
                                   final file = File(gifTo);
-                                  await file.writeAsBytes(_gif.bodyBytes);
+                                  await file.writeAsBytes(gif.bodyBytes);
                                   try {
                                     List<String> share = [gifTo];
                                     await Share.shareFiles(share);
@@ -149,16 +148,16 @@ class _PageGifState extends State<PageGif> {
                     const SizedBox(height: 8),
                     GestureDetector(
                         onLongPress: () async {
-                          http.Response _gif = await http.get(
+                          http.Response gif = await http.get(
                               Uri.parse(listadoGifs[index].url.toString()));
                           permissionReady = await checkPermission(context);
                           if (permissionReady) {
                             var dir = '/storage/emulated/0/Download/';
-                            print("Downloading $dir");
+                            //print("Downloading $dir");
                             var gifTo = '${dir.toString()}gifto.gif';
-                            if (_gif.body.isNotEmpty) {
+                            if (gif.body.isNotEmpty) {
                               final file = File(gifTo);
-                              await file.writeAsBytes(_gif.bodyBytes);
+                              await file.writeAsBytes(gif.bodyBytes);
                               try {
                                 List<String> share = [gifTo];
                                 await Share.shareFiles(share);

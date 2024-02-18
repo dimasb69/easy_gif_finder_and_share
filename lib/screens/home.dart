@@ -21,13 +21,13 @@ class Home extends StatelessWidget {
         ),
         scaffoldBackgroundColor: const Color(0xca5c8486),
       ),
-      home: HomePage(),
+      home: const HomePage(),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                  builder: (context) => Keyadd()));
+                  builder: (context) => const Keyadd()));
             },
           ),
           const SizedBox(width: 10),

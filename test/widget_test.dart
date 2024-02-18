@@ -7,7 +7,7 @@ import 'package:gif_find_send/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MaingPage());
+    await tester.pumpWidget(const MaingPage());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
