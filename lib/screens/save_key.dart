@@ -19,20 +19,37 @@ void main() {
 
 class Keyadd extends StatefulWidget {
   const Keyadd({super.key});
-
   @override
   State<Keyadd> createState() => _KeyaddState();
 }
 
+
 class _KeyaddState extends State<Keyadd> {
   @override
-  Widget build(BuildContext context) {
-    if (mKey == '') {
-      keyController.text = '';
-    } else {
-      keyController.text = mKey;
-    }
+  void initState() {
+    csvRead().then((value) {
+      if (mykey[0].keyS.toString() == '') {
+        keyController.text = '';
+      } else {
+        keyController.text = mKey;
+      }
+    }).then((value) {
+      setState(() {});
+    });
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    csvRead().then((value) {
+      if (mykey[0].keyS.toString() == '') {
+        keyController.text = '';
+      } else {
+        keyController.text = mKey;
+      }
+    }).then((value) {
+      setState(() {});
+    });
     return Scaffold(
       appBar: AppBar(
           title: const Center(
@@ -85,6 +102,10 @@ class _KeyaddState extends State<Keyadd> {
                           keyStoredS(context);
                           keyController.clear();
                           setState(() {});
+                        }).then((value) {
+                          Navigator.pop(context);
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => const MaingPage()));
                         });
                       }
                     },

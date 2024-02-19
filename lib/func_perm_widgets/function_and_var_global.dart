@@ -30,36 +30,30 @@ const miUrl = 'https://momdontgo.dev';
 
 Future<List<Gif>> getGifs(context) async {
   List<Gif> gifs = [];
-  if (mKey == '') {
-    aletKey(context);
-  } else {
-    var url = Uri.parse(
-        "https://api.giphy.com/v1/gifs/search?api_key=$mKey&q=$hints&limit=$cants&offset=0&rating=g&lang=es");
-    final response = await http.get(url);
-    final temValidate = jsonDecode(response.body);
-    if (response.statusCode == 200) {
-      var datos = jsonDecode(response.body);
-      var count = 0;
-      for (var item in datos["data"]) {
-        var n = datos["data"][count]["title"];
-        var u = datos["data"][count]["images"]["downsized_medium"]["url"];
-        gifs.add(Gif(n, u));
-        count++;
-      }
-    } else {
-      print('Boddy:   ${temValidate['meta']['msg']}');
-      if (temValidate['meta']['msg'] == 'Unauthorized') {
-        aletKey(context);
-        mKey = '';
-        keyController.text = '';
-        Navigator.pop(context);
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const MaingPage()));
-
-      }
-      throw Exception("Fallo la conexión");
+  var url = Uri.parse(
+      "https://api.giphy.com/v1/gifs/search?api_key=$mKey&q=$hints&limit=$cants&offset=0&rating=g&lang=es");
+  final response = await http.get(url);
+  final temValidate = jsonDecode(response.body);
+  if (response.statusCode == 200) {
+    var datos = jsonDecode(response.body);
+    var count = 0;
+    for (var item in datos["data"]) {
+      var n = datos["data"][count]["title"];
+      var u = datos["data"][count]["images"]["downsized_medium"]["url"];
+      gifs.add(Gif(n, u));
+      count++;
     }
-    return gifs;
+  } else {
+    print('Boddy:   ${temValidate['meta']['msg']}');
+    if (temValidate['meta']['msg'] == 'Unauthorized') {
+      aletKey(context);
+      mKey = '';
+      keyController.text = '';
+      Navigator.pop(context);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const MaingPage()));
+    }
+    throw Exception("Fallo la conexión");
   }
   return gifs;
 }
@@ -73,12 +67,21 @@ Future<bool> checkPermission(BuildContext context) async {
   if (sdk >= 33) {
     statusess =
         await [Permission.manageExternalStorage, Permission.photos].request();
-  } else {
-    statusess = await [
-      Permission.manageExternalStorage,
-      Permission.storage,
-      Permission.mediaLibrary
-    ].request();
+  } else if (sdk <= 29){
+    {
+      statusess = await [
+        Permission.storage,
+        //Permission.mediaLibrary,
+      ].request();
+    }
+  }else{
+    {
+      statusess = await [
+        Permission.manageExternalStorage,
+        Permission.storage,
+        Permission.mediaLibrary,
+      ].request();
+    }
   }
 
   var stat = false;
@@ -132,7 +135,7 @@ Future<void> prepareSaveDir() async {
 
 Future<String?> findLocalPath() async {
   if (platform == TargetPlatform.android) {
-    return "/sdcard/download/";
+    return "/storage/emulated/0/Download/";
   } else {
     var directory = await getApplicationDocumentsDirectory();
     return '${directory.path}${Platform.pathSeparator}Download';
@@ -174,12 +177,11 @@ Future<void> aletKey(BuildContext context) async {
         TextButton(
           onPressed: () async {
             mykey = [KeySaved('')];
-            await listToCSV(mykey)
-                .then((value) {
+            await listToCSV(mykey).then((value) {
               Navigator.pop(context, 'Si');
               hintController.clear();
               cantController.clear();
-                });
+            });
           },
           child: const Text('OK'),
         ),
@@ -242,8 +244,6 @@ Future<void> keyStoredS(BuildContext context) async {
         TextButton(
           onPressed: () {
             Navigator.pop(context, 'Si');
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const MaingPage()));
           },
           child: const Text('OK'),
         ),
@@ -271,7 +271,9 @@ Future<void> listToCSV(List<KeySaved> lista) async {
 }
 
 Future<void> csvRead() async {
-  mykey = [];
+  if (mykey.isNotEmpty) {
+    mykey = [];
+  }
   final String dir = (await getApplicationDocumentsDirectory()).path;
   final String path = '$dir/$csvName';
   final input = File(path).openRead();
@@ -282,10 +284,10 @@ Future<void> csvRead() async {
   //print('Tamaño:  ${fields.length}');
   final String keyS = fields[1][0].toString();
   mykey.add(KeySaved(keyS));
-  timporEspera(250);
+  sleepTime(600);
 }
 
-Future<void> timporEspera(dur) async {
+Future<void> sleepTime(dur) async {
   await Future.delayed(Duration(milliseconds: dur));
 }
 
@@ -335,3 +337,4 @@ Future<void> urlCall(String surl) async {
     throw Exception('Could not launch $url');
   }
 }
+

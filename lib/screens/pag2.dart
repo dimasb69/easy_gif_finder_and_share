@@ -34,7 +34,13 @@ class PageGif extends StatefulWidget {
 
 class _PageGifState extends State<PageGif> {
   @override
+  void dispose() {
+    Navigator.pop(context);
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
+
     if (Platform.isAndroid) {
       platform = TargetPlatform.android;
     } else {
@@ -119,8 +125,8 @@ class _PageGifState extends State<PageGif> {
                               permissionReady =
                               await checkPermission(context);
                               if (permissionReady) {
-                                var dir =  '/storage/emulated/0/Download/';
-                                print("Downloading $dir");
+                                var dir =  await findLocalPath();
+                                //print("Downloading $dir");
                                 var gifTo = '${dir.toString()}gifto.gif';
                                 if (gif.body.isNotEmpty) {
                                   final file = File(gifTo);
@@ -152,7 +158,7 @@ class _PageGifState extends State<PageGif> {
                               Uri.parse(listadoGifs[index].url.toString()));
                           permissionReady = await checkPermission(context);
                           if (permissionReady) {
-                            var dir = '/storage/emulated/0/Download/';
+                            var dir = await findLocalPath();
                             //print("Downloading $dir");
                             var gifTo = '${dir.toString()}gifto.gif';
                             if (gif.body.isNotEmpty) {

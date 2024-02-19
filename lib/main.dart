@@ -5,7 +5,6 @@ import 'screens/home.dart';
 import 'func_perm_widgets/function_and_var_global.dart';
 
 List<KeySaved> mykey = [];
-var cur_home = false;
 
 void main() => runApp(const Main());
 
@@ -19,14 +18,16 @@ class Main extends StatefulWidget {
 class _MainState extends State<Main> {
   
   @override
-  void initState() {
-    csvRead().then((value) => {
-        mKey = mykey[0].keyS.toString(),
-        setState(() {})
-    });
 
-    super.initState();
+
+  @override
+  void dispose() {
+    listToCSV(mykey).then((value) {
+      print (csv);
+    });
+    super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -55,6 +56,9 @@ class MaingPage extends StatefulWidget {
 class _MaingPageState extends State<MaingPage> {
   @override
   Widget build(BuildContext context) {
+    csvRead().then((value) => {
+      mKey = mykey[0].keyS.toString(),
+    }).then((value) =>  setState(() {}));
     checkPermission(context);
     if (mKey == ''){
       return const Keyadd();
