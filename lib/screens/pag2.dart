@@ -133,7 +133,7 @@ class _PageGifState extends State<PageGif> {
                                   await file.writeAsBytes(gif.bodyBytes);
                                   try {
                                     List<String> share = [gifTo];
-                                    await Share.shareFiles(share);
+                                    await Share.shareXFiles([XFile(share.first)]);
                                   } catch (e, s) {
                                     print(s);
                                     print("Error al Compartir");
@@ -166,7 +166,7 @@ class _PageGifState extends State<PageGif> {
                               await file.writeAsBytes(gif.bodyBytes);
                               try {
                                 List<String> share = [gifTo];
-                                await Share.shareFiles(share);
+                                await Share.shareXFiles([XFile(share.first)]);
                               } catch (e, s) {
                                 print(s);
                                 print("Error al Compartir");

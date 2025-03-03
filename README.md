@@ -1,8 +1,16 @@
-<h2 align="center"> {MomDontGo.Dev} --  Projects </h2>
+# gif_find_send
 
-<h1 align="center"> App de Busqueda de GIF con el server de Giphy </h1>
-<h3 align="center">Al iniciar pide el KEY de Giphy para realizar las busquedas</h3>
-<h3 align="center">Buscas por tipo y cantidad de respuestas y luego puedes compartir a la app que desees</h3>
-<h3 align="center">Esta probada en solo en Android</h3>
-<hr><br>
- 
+A new Flutter project.
+
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

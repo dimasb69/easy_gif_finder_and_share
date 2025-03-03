@@ -36,12 +36,10 @@ Future<List<Gif>> getGifs(context) async {
   final temValidate = jsonDecode(response.body);
   if (response.statusCode == 200) {
     var datos = jsonDecode(response.body);
-    var count = 0;
-    for (var item in datos["data"]) {
+    for (var count = 0; count < datos["data"].length; count ++) {
       var n = datos["data"][count]["title"];
       var u = datos["data"][count]["images"]["downsized_medium"]["url"];
       gifs.add(Gif(n, u));
-      count++;
     }
   } else {
     print('Boddy:   ${temValidate['meta']['msg']}');
@@ -77,9 +75,9 @@ Future<bool> checkPermission(BuildContext context) async {
   }else{
     {
       statusess = await [
-        Permission.manageExternalStorage,
+        //Permission.manageExternalStorage,
         Permission.storage,
-        Permission.mediaLibrary,
+        //Permission.mediaLibrary,
       ].request();
     }
   }

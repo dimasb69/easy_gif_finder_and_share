@@ -7,7 +7,7 @@ import '../main.dart';
 void main() {
   runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Key Add',
+      title: 'Server DATA',
       theme: ThemeData().copyWith(
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xBE95E3A4),

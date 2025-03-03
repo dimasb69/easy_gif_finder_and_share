@@ -6,16 +6,16 @@ import 'func_perm_widgets/function_and_var_global.dart';
 
 List<KeySaved> mykey = [];
 
-void main() => runApp(const Main());
+void main() => runApp(const MyApp());
 
-class Main extends StatefulWidget {
-  const Main({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
-  State<Main> createState() => _MainState();
+  State<MyApp> createState() => _MyAppState();
 }
 
-class _MainState extends State<Main> {
+class _MyAppState extends State<MyApp> {
   
   @override
 
