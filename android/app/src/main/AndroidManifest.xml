@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="gif_find_send"
+        android:label="Gif Find and Share"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
